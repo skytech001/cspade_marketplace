@@ -1,6 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
-
+import path from "node:path";
 import cors from "cors";
 import userRouter from "./routers/userRouter.js";
 import dotenv from "dotenv";
@@ -9,6 +9,7 @@ import orderRouter from "./routers/orderRouter.js";
 
 dotenv.config();
 const app = express();
+const __dirname = path.resolve();
 
 mongoose.connect("mongodb://localhost/centerspade", () => {
   console.log("server is connected to database");
@@ -26,6 +27,11 @@ app.use("/products", productRouter);
 app.use("/orders", orderRouter);
 app.get("/keys/paypal", (req, res) => {
   res.send(process.env.PAYPAL_CLIENT_ID || "sb");
+});
+
+app.use(express.static(path.join(__dirname, "/frontend/build")));
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "/frontend/build/index.html"));
 });
 
 const port = process.env.PORT || 5000;
