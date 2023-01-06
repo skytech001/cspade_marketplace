@@ -1,0 +1,337 @@
+
+
+html {
+  font-size: 62.5%;
+  /*by default fontsize is 16px. so 16px * 62.5 = 10px. 10px = 1rem.*/
+  box-sizing: border-box;
+  /*this makes it easier to manage margins paddingss and border*/
+}
+
+body {
+  margin: 0;
+  height: 100vh;
+  /*vh = viewport height*/
+  font-size: 1.6rem;
+  font-family: Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+#root{
+  height: 100%;
+}
+
+/*layout*/
+.grid-container {
+  display: grid;
+  grid-template-areas:
+    'header'
+    'main'
+    'footer';
+  grid-template-columns: 1fr;
+  grid-template-rows: 5rem 1fr 5rem;
+  height: 100%;
+}
+
+header {
+  grid-area: header;
+  /* this connects this to the gird template area above called header*/
+  background-color: #203040;
+}
+
+main {
+  grid-area: main;
+  padding: 1rem;
+}
+
+footer {
+  grid-area: footer;
+  background-color: #203040;
+  color: #ffffff;
+}
+
+.row {
+  /*this makes the header flex to seperate logo from signin and cart*/
+  display: flex;
+  flex-wrap: wrap;
+  /*this makes flex responsive*/
+  justify-content: space-between;
+  /*create maximum distance between items*/
+  align-items: center;
+  /*center items vertically*/
+}
+
+.row.center {
+  /*center is a subclass to row. it items that contain both classes*/
+  justify-content: center;
+  /*centers item vertically and horizontally*/
+}
+
+.row.left {
+  justify-content: left;
+}
+
+.row.top{
+  align-items: flex-start;
+}
+
+.col-1{
+  flex: 1 1 25rem; /*the first 1 means to occupy 1 of 4 and the second one means to make it shrinkable.*/
+}
+
+.col-2 {
+  flex: 2 1 50rem;
+}
+
+.min-30 {
+  min-width: 30rem;
+}
+
+
+/*common*/
+h1 {
+  font-size: 1.8rem;
+  padding: 1rem 0;
+}
+
+h2 {
+  font-size: 1.6rem;
+  padding: 1rem 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  color: #ff8000;
+}
+
+ul{
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+}
+
+li{
+  margin-top: 1rem;
+}
+
+input,
+select, 
+textarea,
+button{
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: 0.1rem #a4a4a4 solid;
+  font-size: 1.6rem;
+    font-family: Arial, Helvetica, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+button {
+  background-color: #f8f8f8;
+    cursor: pointer;
+}
+
+button.primary{
+  background-color: #f0c040; 
+}
+
+button.block{
+  width: 100%;
+}
+
+button.small {
+  font-size: 1.2rem;
+}
+
+button.pagination {
+  margin-top: 2rem;
+  border: none;
+  background-color: #ffffff;
+}
+
+input:hover
+select:hover
+textarea:hover
+button:hover{
+  border: 0.1rem #404040 solid;
+}
+
+header a {
+  /*this means all links inside header*/
+  color: #ffffff;
+  padding: 1rem;
+}
+
+a.brand {
+  /*this means a that has class of brand*/
+  color: #ffffff;
+  font-size: 3rem;
+  font-weight: bold;
+}
+
+.badge {
+  background-color: #f02020;
+  color: #ffffff;
+  border-radius: 50%;
+  padding: 0.2rem 0.7rem;
+  font-size: 1.4rem;
+  margin-left: 0.2rem;
+}
+
+img {
+  border-radius: 0.5rem;
+}
+
+img.small {
+  max-width: 5rem;
+  width: 100%;
+}
+
+img.medium {
+  max-width: 29rem;
+  width: 100%;
+  height: 25rem;
+}
+
+img.large{
+  width: 30rem; /*the impact of this line is to make the image responsive on smaller devices*/
+  height: 30rem;
+}
+
+/*card*/
+
+.card {
+  border: 0.1rem #c0c0c0 solid;
+  background-color: #f8f8f8;
+  border-radius: 0.5rem;
+  margin: 1rem;
+}
+
+.card-body {
+  padding: 1rem;
+}
+
+.card-body>* {
+  /*all child/all element inside card-body*/
+  margin-bottom: 0.5rem;
+}
+
+.price {
+  font-size: 2rem;
+}
+
+/*rating*/
+.rating span {
+  /*all spans inside rating*/
+  color: #f0c040;
+  margin: 0.1rem;
+}
+
+.rating span:last-child{
+  color: #404040
+}
+
+.loading{
+  display: block !important;
+}
+.success{
+  color: #20a020
+}
+
+.danger {
+  color: #a02020
+}
+
+.alert{
+  padding: 1rem;
+  border: 0.1rem solid transparent;
+  border-radius: 0.5rem;
+}
+
+.alert-success {
+  color: #20a020;
+  background-color: #c1eebbe0;
+}
+
+.alert-info{
+  color: #2020a0;
+  background-color: #e0e0ff;
+}
+
+.alert-danger {
+  color: #a02020;
+  background-color: #ffe0e0e0;
+}
+
+.form {
+  max-width: 60rem;
+  margin: 0 auto;
+}
+
+.form > div {/*for direct div of forms*/
+  display: flex;
+  flex-direction: column;
+  margin: 1rem;
+}
+
+.form label {
+  margin: 1rem 0;
+ 
+}
+
+.dropdown {
+  display: inline-block;
+  position: relative;
+}
+
+.dropdown-content {
+  position: absolute;
+  display: none;
+  right: 0;
+  min-width: 12rem; 
+  padding: 1rem;
+  z-index: 1;
+  background-color: #203040;
+  margin: 0;
+  margin-top: 0.4rem;
+  border-radius: 0.5rem;
+}
+
+.dropdown:hover .dropdown-content {/* if mouse over dropdown, the set dropdown-content to block display */
+  display: block;
+}
+
+.checkout-steps > div {
+  border-top: 0.3rem #c0c0c0 solid;
+  color: #c0c0c0;
+  flex: 1;
+  padding: 1rem;
+  font-weight: bold;
+}
+
+.checkout-steps > div.active {/* for direct div that are active*/
+  border-top-color: #f08000 ;
+  color: #f08000;
+}
+
+/*table*/
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.table tbody tr:nth-of-type(odd) {
+  background-color: #f4f4f4;
+}
+.table td, .table th {
+  text-align: left;
+  border: 0.1rem solid #e4e4e4;
+  padding: 0.5rem;
+}
+
+.table button {
+  margin: 0 0.2rem;
+}
