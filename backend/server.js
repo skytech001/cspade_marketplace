@@ -11,7 +11,7 @@ dotenv.config();
 const app = express();
 const __dirname = path.resolve();
 
-mongoose.connect("mongodb://localhost/centerspade", () => {
+mongoose.connect(process.env.MONGODB_URL, () => {
   console.log("server is connected to database");
 });
 app.use(cors());
