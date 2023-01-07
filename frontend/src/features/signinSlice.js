@@ -6,7 +6,7 @@ export const userSignIn = createAsyncThunk(
   async ({ email, password }, { rejectWithValue }) => {
     try {
       const response = await Axios.post(
-        "https://cspade-marketplace.herokuapp.com/signin",
+        "https://cspade-marketplace.herokuapp.com/users/signin",
         {
           email,
           password,
