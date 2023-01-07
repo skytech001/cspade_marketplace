@@ -4,6 +4,7 @@ import { isAuth, isAdmin } from "../utils.js";
 import Product from "../models/productModel.js";
 import { v2 as cloudinary } from "cloudinary";
 import dotenv from "dotenv";
+import data from "../data.js";
 
 const productRouter = express.Router();
 dotenv.config();
@@ -19,10 +20,10 @@ productRouter.get("/", async (req, res) => {
   res.send(products);
 });
 
-// productRouter.get("/seed", async (req, res) => {  used to upload multiple products
-//   const createdProducts = await Product.insertMany(data.products);
-//   res.send({ createdProducts });
-// });
+productRouter.get("/seed", async (req, res) => {
+  const createdProducts = await Product.insertMany(data.products);
+  res.send({ createdProducts });
+});
 
 productRouter.get("/:id", async (req, res) => {
   const product = await Product.findOne({ _id: req.params.id });
