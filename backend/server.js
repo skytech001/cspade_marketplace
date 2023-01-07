@@ -9,21 +9,17 @@ import orderRouter from "./routers/orderRouter.js";
 
 dotenv.config();
 const app = express();
+const PORT = process.env.PORT || 5000;
 const __dirname = path.resolve();
 
-mongoose.connect(
-  process.env.MONGODB_URL || "mongodb://localhost/centerspade",
-  () => {
-    console.log("server is connected to database");
-  }
-);
+mongoose.connect(process.env.MONGODB_URL || "mongodb://localhost/centerspade", {
+  useNewUrlParser: true,
+});
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "/frontend/build")));
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "/frontend/build/index.html"));
-});
+
 // app.get("/", (req, res) => {
 //   res.send("server is ready");
 // });
@@ -35,7 +31,10 @@ app.get("/keys/paypal", (req, res) => {
   res.send(process.env.PAYPAL_CLIENT_ID || "sb");
 });
 
-const PORT = process.env.PORT || 5000;
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "/frontend/build/index.html"));
+});
+
 app.listen(PORT, () => {
   console.log(`serve at http://localhost:${PORT}`);
 });
