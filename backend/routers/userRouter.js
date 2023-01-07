@@ -6,11 +6,17 @@ import expressAsyncHandler from "express-async-handler";
 
 const userRouter = express.Router();
 
-// userRouter.get("/seed", async (req, res) => {
-//   // await User.remove({});
-//   const createdUsers = await User.insertMany(data.users);
-//   res.send({ createdUsers });
-// });
+userRouter.get("/seed", async (req, res) => {
+  // await User.remove({});
+  const createdUsers = new User({
+    name: "Abbey",
+    email: "admin@example.com",
+    password: "$2a$08$AO9kNnX7ClakY.0JtSS8uOQO9JCdm1UHv3HBMHrUzWu7m/tmhSVdC",
+    isAdmin: true,
+  });
+  createdUsers.save();
+  res.send({ createdUsers });
+});
 
 userRouter.post("/signin", async (req, res) => {
   const user = await User.findOne({ email: req.body.email });
