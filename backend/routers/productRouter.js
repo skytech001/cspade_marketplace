@@ -21,7 +21,7 @@ productRouter.get("/", async (req, res) => {
 });
 
 productRouter.get("/seed", async (req, res) => {
-  const createdProducts = await Product.insertOne({
+  const createdProducts = new Product({
     name: "Slim Fitted Shirt",
     image:
       "http://res.cloudinary.com/dlp9idmqm/image/upload/v1672947733/product_images/mpk1dphsbxpchnoe4nc8.jpg",
