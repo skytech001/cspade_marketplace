@@ -61,7 +61,7 @@ const data = {
       numReviews: 45,
     },
     {
-      _id: "5",
+      id: "5",
       name: "Loose Blouse",
       image: [
         "http://res.cloudinary.com/dlp9idmqm/image/upload/v1672948555/product_images/eyrbqbjxkqazgywinhfg.jpg",
@@ -132,7 +132,7 @@ const data = {
       numReviews: 70,
     },
     {
-      _id: "10",
+      id: "10",
       name: "Dress shoe",
       image: [
         "http://res.cloudinary.com/dlp9idmqm/image/upload/v1672949351/product_images/gjkaodiuxq62ithh73e3.webp",
@@ -147,7 +147,7 @@ const data = {
       numReviews: 23,
     },
     {
-      _id: "11",
+      id: "11",
       name: "Nike running shoe",
       image: [
         "http://res.cloudinary.com/dlp9idmqm/image/upload/v1672949635/product_images/zdbyc39awkqfvtgrbcz9.jpg",
@@ -161,7 +161,7 @@ const data = {
       numReviews: 30,
     },
     {
-      _id: "12",
+      id: "12",
       name: "Nike gym shoe",
       image: [
         "http://res.cloudinary.com/dlp9idmqm/image/upload/v1672949742/product_images/xkhqzo5l57hvpnvhlvma.webp",
@@ -175,7 +175,7 @@ const data = {
       numReviews: 1,
     },
     {
-      _id: "13",
+      id: "13",
       name: "All star",
       image: [
         "http://res.cloudinary.com/dlp9idmqm/image/upload/v1672949862/product_images/m1qbbreesbhge5zbarko.webp",
@@ -190,7 +190,7 @@ const data = {
       numReviews: 450,
     },
     {
-      _id: "14",
+      id: "14",
       name: "Soft casual shoe",
       image: [
         "http://res.cloudinary.com/dlp9idmqm/image/upload/v1672950032/product_images/itejovyzrr1midkoyhaf.jpg",
@@ -204,7 +204,7 @@ const data = {
       numReviews: 76,
     },
     {
-      _id: "15",
+      id: "15",
       name: "Nike boys shoe",
       image: [
         "http://res.cloudinary.com/dlp9idmqm/image/upload/v1672950112/product_images/tmgmdmchil6uzpommtgy.webp",
