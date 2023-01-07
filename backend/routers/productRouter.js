@@ -21,21 +21,8 @@ productRouter.get("/", async (req, res) => {
 });
 
 productRouter.get("/seed", async (req, res) => {
-  const createdProducts = new Product({
-    name: "Slim Fitted Shirt",
-    image:
-      "http://res.cloudinary.com/dlp9idmqm/image/upload/v1672947733/product_images/mpk1dphsbxpchnoe4nc8.jpg",
-    brand: "slim ",
-    category: "shirts",
-    description:
-      "Mens slim fitted shirt. comes in all sizes. returns available for eligible purchases.",
-    price: 50,
-    countInStock: 23,
-    rating: 4.6,
-    numReviews: 14,
-  });
+  const createdProducts = await Product.insertMany(data.products);
   createdProducts.save();
-  console.log(createdProducts);
   res.send({ createdProducts });
 });
 
