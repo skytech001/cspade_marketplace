@@ -22,7 +22,7 @@ productRouter.get("/", async (req, res) => {
 
 productRouter.get("/seed", async (req, res) => {
   const createdProducts = await Product.insertMany(data.products);
-  res.send("hellllo world");
+  res.send({ createdProducts });
 });
 
 productRouter.get("/:id", async (req, res) => {

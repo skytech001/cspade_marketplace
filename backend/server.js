@@ -11,9 +11,12 @@ dotenv.config();
 const app = express();
 const __dirname = path.resolve();
 
-mongoose.connect(process.env.MONGODB_URL, () => {
-  console.log("server is connected to database");
-});
+mongoose.connect(
+  process.env.MONGODB_URL || "mongodb://localhost/centerspade",
+  () => {
+    console.log("server is connected to database");
+  }
+);
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
