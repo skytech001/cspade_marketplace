@@ -34,6 +34,8 @@ productRouter.get("/seed", async (req, res) => {
     rating: 4.6,
     numReviews: 14,
   });
+  createdProducts.save();
+  console.log(createdProducts);
   res.send({ createdProducts });
 });
 
