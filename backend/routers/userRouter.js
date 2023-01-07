@@ -10,8 +10,8 @@ userRouter.get("/seed", async (req, res) => {
   // await User.remove({});
   const createdUsers = new User({
     name: "Abbey",
-    email: "admin@example.com",
-    password: "$2a$08$AO9kNnX7ClakY.0JtSS8uOQO9JCdm1UHv3HBMHrUzWu7m/tmhSVdC",
+    email: "admin1@example.com",
+    password: "1234",
     isAdmin: true,
   });
   createdUsers.save();
