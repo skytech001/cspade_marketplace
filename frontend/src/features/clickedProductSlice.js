@@ -12,7 +12,9 @@ export const getClickedProduct = createAsyncThunk(
   "clickedProductDetail/getClickedProduct",
   async (id) => {
     try {
-      const response = await axios.get(`http://localhost:5000/products/${id}`);
+      const response = await axios.get(
+        `https://cspade-marketplace.herokuapp.com/products/${id}`
+      );
 
       return response.data;
     } catch (error) {

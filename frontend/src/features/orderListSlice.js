@@ -7,9 +7,12 @@ export const getdetailOrder = createAsyncThunk(
     const state = getState();
     const userInfo = state.signin.userInfo;
     try {
-      const response = await axios.get(`http://localhost:5000/orders/${id}`, {
-        headers: { authorization: `Bearer ${userInfo.token}` },
-      });
+      const response = await axios.get(
+        `https://cspade-marketplace.herokuapp.com/orders/${id}`,
+        {
+          headers: { authorization: `Bearer ${userInfo.token}` },
+        }
+      );
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data.message);
@@ -23,9 +26,12 @@ export const getAllOrders = createAsyncThunk(
     const state = getState();
     const userInfo = state.signin.userInfo;
     try {
-      const response = await axios.get("http://localhost:5000/orders", {
-        headers: { authorization: `Bearer ${userInfo.token}` },
-      });
+      const response = await axios.get(
+        "https://cspade-marketplace.herokuapp.com/orders",
+        {
+          headers: { authorization: `Bearer ${userInfo.token}` },
+        }
+      );
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data.message);
@@ -40,11 +46,14 @@ export const myOrders = createAsyncThunk(
     const userInfo = state.signin.userInfo;
 
     try {
-      const response = await axios.get("http://localhost:5000/orders/mine", {
-        headers: {
-          authorization: `Bearer ${userInfo.token}`,
-        },
-      });
+      const response = await axios.get(
+        "https://cspade-marketplace.herokuapp.com/orders/mine",
+        {
+          headers: {
+            authorization: `Bearer ${userInfo.token}`,
+          },
+        }
+      );
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data.message);
@@ -59,7 +68,7 @@ export const deleteOrder = createAsyncThunk(
     const userInfo = state.signin.userInfo;
     try {
       const response = await axios.delete(
-        `http://localhost:5000/orders/${id}`,
+        `https://cspade-marketplace.herokuapp.com/orders/${id}`,
         {
           headers: { authorization: `Bearer ${userInfo.token}` },
         }
@@ -78,7 +87,7 @@ export const deliverThisOrder = createAsyncThunk(
     const userInfo = state.signin.userInfo;
     try {
       const response = await axios.put(
-        `http://localhost:5000/orders/${id}/deliver`,
+        `https://cspade-marketplace.herokuapp.com/orders/${id}/deliver`,
         id,
         {
           headers: { authorization: `Bearer ${userInfo.token}` },

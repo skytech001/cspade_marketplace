@@ -64,7 +64,9 @@ const PlaceOrderScreen = () => {
 
   useEffect(() => {
     const loadPaypalScript = async () => {
-      const { data } = await axios.get("http://localhost:5000/keys/paypal");
+      const { data } = await axios.get(
+        "https://cspade-marketplace.herokuapp.com/keys/paypal"
+      );
       paypalDispatch({
         type: "resetOptions",
         value: {

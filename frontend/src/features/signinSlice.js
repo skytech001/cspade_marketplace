@@ -25,7 +25,7 @@ export const userRegister = createAsyncThunk(
   async ({ name, email, password }, { rejectWithValue }) => {
     try {
       const response = await Axios.post(
-        "http://localhost:5000/users/register",
+        "https://cspade-marketplace.herokuapp.com/users/register",
         {
           name,
           email,
@@ -50,7 +50,7 @@ export const updateUserProfile = createAsyncThunk(
 
     try {
       const response = await Axios.put(
-        `http://localhost:5000/users/profile`,
+        `https://cspade-marketplace.herokuapp.com/users/profile`,
         info,
         {
           headers: { authorization: `Bearer ${userInfo.token}` },
