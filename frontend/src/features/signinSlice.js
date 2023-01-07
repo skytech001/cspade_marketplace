@@ -5,10 +5,13 @@ export const userSignIn = createAsyncThunk(
   "signin/UserSignin",
   async ({ email, password }, { rejectWithValue }) => {
     try {
-      const response = await Axios.post("http://localhost:5000/users/signin", {
-        email,
-        password,
-      });
+      const response = await Axios.post(
+        "https://cspade-marketplace.herokuapp.com/signin",
+        {
+          email,
+          password,
+        }
+      );
 
       return response.data;
     } catch (error) {
