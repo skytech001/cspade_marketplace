@@ -8,9 +8,12 @@ export const getAllUsers = createAsyncThunk(
     const state = getState();
     const userInfo = state.signin.userInfo;
     try {
-      const response = await Axios.get(" http://localhost:5000/users", {
-        headers: { authorization: `Bearer ${userInfo.token}` },
-      });
+      const response = await Axios.get(
+        " https://cspade-marketplace.herokuapp.com/users",
+        {
+          headers: { authorization: `Bearer ${userInfo.token}` },
+        }
+      );
       return response.data;
     } catch (error) {
       const err = rejectWithValue(error.response.data.message);
@@ -91,9 +94,12 @@ export const deleteUser = createAsyncThunk(
     const userInfo = state.signin.userInfo;
     console.log(id);
     try {
-      const response = await axios.delete(`http://localhost:5000/${id}`, {
-        headers: { authorization: `Bearer ${userInfo.token}` },
-      });
+      const response = await axios.delete(
+        `https://cspade-marketplace.herokuapp.com/users/${id}`,
+        {
+          headers: { authorization: `Bearer ${userInfo.token}` },
+        }
+      );
       console.log(response.data);
       return response.data.message;
     } catch (error) {
