@@ -1,5 +1,24 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
 import Axios from "axios";
+
+export const getAllUsers = createAsyncThunk(
+  "users/getAllUsers",
+  async (_, { rejectWithValue, getState }) => {
+    const state = getState();
+    const userInfo = state.signin.userInfo;
+    try {
+      const response = await Axios.get(" http://localhost:5000/users", {
+        headers: { authorization: `Bearer ${userInfo.token}` },
+      });
+      return response.data;
+    } catch (error) {
+      const err = rejectWithValue(error.response.data.message);
+      console.log(err);
+      return err;
+    }
+  }
+);
 
 export const userSignIn = createAsyncThunk(
   "signin/UserSignin",
@@ -65,9 +84,31 @@ export const updateUserProfile = createAsyncThunk(
   }
 );
 
+export const deleteUser = createAsyncThunk(
+  "delete/deleteUser",
+  async (id, { rejectWithValue, getState }) => {
+    const state = getState();
+    const userInfo = state.signin.userInfo;
+    console.log(id);
+    try {
+      const response = await axios.delete(`http://localhost:5000/${id}`, {
+        headers: { authorization: `Bearer ${userInfo.token}` },
+      });
+      console.log(response.data);
+      return response.data.message;
+    } catch (error) {
+      const err = rejectWithValue(error.response.data.message);
+      return err;
+    }
+  }
+);
+
 const signinSlice = createSlice({
   name: "signin",
   initialState: {
+    users: [],
+    error: "",
+    loading: false,
     userLoading: false,
     userInfo: {},
     signinError: false,
@@ -76,6 +117,9 @@ const signinSlice = createSlice({
     updateLoading: false,
     updateSuccess: false,
     updateError: "",
+    deleteUserSuccess: false,
+    deleteUserError: false,
+    deleteUserPending: false,
   },
   reducers: {
     userSignout: (state) => {
@@ -92,6 +136,18 @@ const signinSlice = createSlice({
   },
   extraReducers(builder) {
     builder
+      .addCase(getAllUsers.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getAllUsers.fulfilled, (state, action) => {
+        state.loading = false;
+        state.users = action.payload;
+      })
+      .addCase(getAllUsers.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
       .addCase(userSignIn.pending, (state, action) => {
         state.userLoading = true;
       })
@@ -139,6 +195,18 @@ const signinSlice = createSlice({
       .addCase(updateUserProfile.rejected, (state, action) => {
         state.updateLoading = false;
         state.updateError = action.payload;
+      })
+      //delete user
+      .addCase(deleteUser.pending, (state, action) => {
+        state.deleteUserPending = true;
+      })
+      .addCase(deleteUser.fulfilled, (state, action) => {
+        state.deleteUserPending = false;
+        state.deleteUserSuccess = action.payload;
+      })
+      .addCase(deleteUser.rejected, (state, action) => {
+        state.deleteUserPending = false;
+        state.deleteUserError = action.payload;
       });
   },
 });

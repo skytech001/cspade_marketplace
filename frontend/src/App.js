@@ -17,6 +17,7 @@ import AdminAuthRooute from "./components/AdminAuthRooute";
 import ListProductScreen from "./screens/ListProductScreen";
 import ProductEditScreen from "./screens/ProductEditScreen";
 import ListOrderScreen from "./screens/ListOrderScreen";
+import ListUserScreen from "./screens/ListUserScreen";
 
 function App() {
   const { cartItems } = useSelector((state) => state.addToCart);
@@ -120,6 +121,7 @@ function App() {
                 path="/Listofproduct"
                 element={<ListProductScreen />}
               ></Route>
+              <Route path="/userslist" element={<ListUserScreen />}></Route>
               <Route path="/orderlist" element={<ListOrderScreen />}></Route>
               <Route
                 path="/product/:id/edit"

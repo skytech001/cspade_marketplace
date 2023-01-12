@@ -1,22 +1,22 @@
 import express from "express";
 import User from "../models/userModel.js";
 import bcrypt from "bcryptjs";
-import { generateToken, isAuth } from "../utils.js";
+import { generateToken, isAdmin, isAuth } from "../utils.js";
 import expressAsyncHandler from "express-async-handler";
 
 const userRouter = express.Router();
 
-userRouter.get("/seed", async (req, res) => {
-  // await User.remove({});
-  const createdUsers = new User({
-    name: "Abbey",
-    email: "admin1@example.com",
-    password: "1234",
-    isAdmin: true,
-  });
-  createdUsers.save();
-  res.send({ createdUsers });
-});
+// userRouter.get("/seed", async (req, res) => {
+//   // await User.remove({});
+//   const createdUsers = new User({
+//     name: "Abbey",
+//     email: "admin1@example.com",
+//     password: "1234",
+//     isAdmin: true,
+//   });
+//   createdUsers.save();
+//   res.send({ createdUsers });
+// });
 
 userRouter.post("/signin", async (req, res) => {
   const user = await User.findOne({ email: req.body.email });
@@ -89,6 +89,32 @@ userRouter.put(
       isAdmin: updatedUser.isAdmin,
       token: generateToken(updatedUser),
     });
+  })
+);
+
+// get all users
+userRouter.get(
+  "/",
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const users = await User.find({});
+    res.send(users);
+  })
+);
+
+userRouter.delete(
+  "/:id",
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const user = await User.findById(req.params.id);
+    if (user) {
+      await user.remove();
+      res.send({ message: "User Deleted" });
+    } else {
+      res.status(404).send({ message: "User Not Found" });
+    }
   })
 );
 
