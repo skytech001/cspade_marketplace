@@ -73,7 +73,7 @@ export const deleteOrder = createAsyncThunk(
           headers: { authorization: `Bearer ${userInfo.token}` },
         }
       );
-      return response.data;
+      return response.data.message;
     } catch (error) {
       return rejectWithValue(error.response.data.message);
     }
@@ -107,6 +107,7 @@ const orderListSlice = createSlice({
     allOrderLoading: false,
     allOrderError: "",
     deleteSuccess: false,
+    deleteMessage: "",
     loading: false,
     error: "",
     userOrders: [],
@@ -117,6 +118,11 @@ const orderListSlice = createSlice({
     detailError: "",
     detailLoading: false,
     orderDetail: "",
+  },
+  reducers: {
+    deleteOrderReset: (state) => {
+      state.deleteSuccess = false;
+    },
   },
   extraReducers(builder) {
     builder
@@ -158,7 +164,8 @@ const orderListSlice = createSlice({
       })
       .addCase(deleteOrder.fulfilled, (state, action) => {
         state.deleteLoading = false;
-        state.deleteSuccess = action.payload;
+        state.deleteSuccess = true;
+        state.deleteMessage = action.payload;
       })
       .addCase(deleteOrder.rejected, (state, action) => {
         state.deleteLoading = false;
@@ -180,3 +187,4 @@ const orderListSlice = createSlice({
 });
 
 export default orderListSlice.reducer;
+export const { deleteOrderReset } = orderListSlice.actions;

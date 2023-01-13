@@ -100,7 +100,6 @@ export const deleteUser = createAsyncThunk(
           headers: { authorization: `Bearer ${userInfo.token}` },
         }
       );
-      console.log(response.data);
       return response.data.message;
     } catch (error) {
       const err = rejectWithValue(error.response.data.message);
@@ -124,8 +123,8 @@ const signinSlice = createSlice({
     updateSuccess: false,
     updateError: "",
     deleteUserSuccess: false,
-    deleteUserError: false,
-    deleteUserPending: false,
+    deleteUserError: "",
+    deleteUserMessage: "",
   },
   reducers: {
     userSignout: (state) => {
@@ -138,6 +137,11 @@ const signinSlice = createSlice({
       state.updateSuccess = false;
       state.updateError = "";
       state.updateLoading = false;
+    },
+    deleteReset: (state) => {
+      state.deleteUserSuccess = false;
+      state.deleteUserError = false;
+      state.deleteUserPending = false;
     },
   },
   extraReducers(builder) {
@@ -203,12 +207,10 @@ const signinSlice = createSlice({
         state.updateError = action.payload;
       })
       //delete user
-      .addCase(deleteUser.pending, (state, action) => {
-        state.deleteUserPending = true;
-      })
       .addCase(deleteUser.fulfilled, (state, action) => {
         state.deleteUserPending = false;
-        state.deleteUserSuccess = action.payload;
+        state.deleteUserSuccess = true;
+        state.deleteUserMessage = action.payload;
       })
       .addCase(deleteUser.rejected, (state, action) => {
         state.deleteUserPending = false;
@@ -218,4 +220,4 @@ const signinSlice = createSlice({
 });
 
 export default signinSlice.reducer;
-export const { userSignout, profileReset } = signinSlice.actions;
+export const { userSignout, profileReset, deleteReset } = signinSlice.actions;
