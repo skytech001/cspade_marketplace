@@ -5,9 +5,7 @@ export const getProductList = createAsyncThunk(
   "products/getProductList",
   async () => {
     try {
-      const response = await axios.get(
-        "https://cspade-marketplace.herokuapp.com/products"
-      );
+      const response = await axios.get("http://localhost:5000/products");
       return response.data;
     } catch (err) {
       return err.message;
@@ -23,7 +21,7 @@ export const createProduct = createAsyncThunk(
 
     try {
       const response = await axios.post(
-        "https://cspade-marketplace.herokuapp.com/products",
+        "http://localhost:5000/products",
         data,
         {
           headers: { authorization: `Bearer ${userInfo.token}` },
@@ -52,7 +50,7 @@ export const updateProduct = createAsyncThunk(
     const userInfo = state.signin.userInfo;
     try {
       const response = await axios.put(
-        `https://cspade-marketplace.herokuapp.com/products/${id}`,
+        `http://localhost:5000/products/${id}`,
         productData,
         {
           headers: { authorization: `Bearer ${userInfo.token}` },
@@ -78,7 +76,7 @@ export const deleteProduct = createAsyncThunk(
     const userInfo = state.signin.userInfo;
     try {
       const response = await axios.delete(
-        `https://cspade-marketplace.herokuapp.com/products/${product._id}`,
+        `http://localhost:5000/products/${product._id}`,
         {
           headers: { authorization: `bearer ${userInfo.token}` },
         }

@@ -4,9 +4,7 @@ import axios from "axios";
 export const addItemToCart = createAsyncThunk(
   "addToCart/addItemToCart",
   async ({ id, qty }) => {
-    const response = await axios.get(
-      `https://cspade-marketplace.herokuapp.com/products/${id}`
-    );
+    const response = await axios.get(`http://localhost:5000/products/${id}`);
 
     return {
       name: response.data.name,

@@ -1,11 +1,18 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import LoadingBox from "../components/LoadingBox";
 import MessageBox from "../components/MessageBox";
-import { deleteReset, deleteUser, getAllUsers } from "../features/signinSlice";
+import {
+  deleteReset,
+  deleteUser,
+  getAllUsers,
+  resetUser,
+} from "../features/signinSlice";
 
 const ListUserScreen = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const {
     users,
     loading,
@@ -17,15 +24,14 @@ const ListUserScreen = () => {
 
   useEffect(() => {
     dispatch(getAllUsers());
-    if (deleteUserSuccess) {
+    if (deleteUserSuccess || deleteUserError) {
       setTimeout(() => {
         dispatch(deleteReset());
       }, 4000);
     }
-  }, [dispatch, deleteUserSuccess]);
+  }, [dispatch, deleteUserSuccess, deleteUserError]);
 
   const deletehandler = (user) => {
-    // if (!user.isAdmin) {
     if (
       window.confirm(
         "This can not be reversed. Are you sure you want to delete this user?"
@@ -33,9 +39,10 @@ const ListUserScreen = () => {
     ) {
       dispatch(deleteUser(user._id));
     }
-    // } else {
-    //   alert("You can not delete Admin user.");
-    // }
+  };
+
+  const editHandler = (userId) => {
+    navigate(`/user/${userId}/edit`);
   };
 
   return (
@@ -50,8 +57,8 @@ const ListUserScreen = () => {
           {deleteUserSuccess && (
             <MessageBox variant="success">{deleteUserMessage}</MessageBox>
           )}
-          {deleteUserSuccess && (
-            <MessageBox variant="error">{deleteUserError}</MessageBox>
+          {deleteUserError && (
+            <MessageBox variant="danger">{deleteUserError}</MessageBox>
           )}
           <table className="table">
             <thead>
@@ -73,7 +80,13 @@ const ListUserScreen = () => {
                   <td>{user.isSeller ? "Yes" : "No"}</td>
                   <td>{user.isAdmin ? "Yes" : " No"}</td>
                   <td>
-                    <button type="button" className="small">
+                    <button
+                      type="button"
+                      className="small"
+                      onClick={() => {
+                        editHandler(user._id);
+                      }}
+                    >
                       Edit
                     </button>
                     <button

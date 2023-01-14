@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
+
 import Axios from "axios";
 
 export const getAllUsers = createAsyncThunk(
@@ -8,12 +8,9 @@ export const getAllUsers = createAsyncThunk(
     const state = getState();
     const userInfo = state.signin.userInfo;
     try {
-      const response = await Axios.get(
-        " https://cspade-marketplace.herokuapp.com/users",
-        {
-          headers: { authorization: `Bearer ${userInfo.token}` },
-        }
-      );
+      const response = await Axios.get(" http://localhost:5000/users", {
+        headers: { authorization: `Bearer ${userInfo.token}` },
+      });
       return response.data;
     } catch (error) {
       const err = rejectWithValue(error.response.data.message);
@@ -27,13 +24,10 @@ export const userSignIn = createAsyncThunk(
   "signin/UserSignin",
   async ({ email, password }, { rejectWithValue }) => {
     try {
-      const response = await Axios.post(
-        "https://cspade-marketplace.herokuapp.com/users/signin",
-        {
-          email,
-          password,
-        }
-      );
+      const response = await Axios.post("http://localhost:5000/users/signin", {
+        email,
+        password,
+      });
 
       return response.data;
     } catch (error) {
@@ -47,7 +41,7 @@ export const userRegister = createAsyncThunk(
   async ({ name, email, password }, { rejectWithValue }) => {
     try {
       const response = await Axios.post(
-        "https://cspade-marketplace.herokuapp.com/users/register",
+        "http://localhost:5000/users/register",
         {
           name,
           email,
@@ -64,6 +58,24 @@ export const userRegister = createAsyncThunk(
   }
 );
 
+export const getDetailedUser = createAsyncThunk(
+  "user/getDetailedUser",
+  async (id, { getState, rejectWithValue }) => {
+    const state = getState();
+    const userInfo = state.signin.userInfo;
+
+    try {
+      const response = await Axios.get(`http://localhost:5000/users/${id}`, {
+        headers: { authorization: `Bearer ${userInfo.token}` },
+      });
+
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data.message);
+    }
+  }
+);
+
 export const updateUserProfile = createAsyncThunk(
   "profile/updateUserProfile",
   async (info, { rejectWithValue, getState }) => {
@@ -72,7 +84,7 @@ export const updateUserProfile = createAsyncThunk(
 
     try {
       const response = await Axios.put(
-        `https://cspade-marketplace.herokuapp.com/users/profile`,
+        `http://localhost:5000/users/profile`,
         info,
         {
           headers: { authorization: `Bearer ${userInfo.token}` },
@@ -94,16 +106,36 @@ export const deleteUser = createAsyncThunk(
     const userInfo = state.signin.userInfo;
     console.log(id);
     try {
-      const response = await axios.delete(
-        `https://cspade-marketplace.herokuapp.com/users/${id}`,
-        {
-          headers: { authorization: `Bearer ${userInfo.token}` },
-        }
-      );
+      const response = await Axios.delete(`http://localhost:5000/users/${id}`, {
+        headers: { authorization: `Bearer ${userInfo.token}` },
+      });
       return response.data.message;
     } catch (error) {
       const err = rejectWithValue(error.response.data.message);
       return err;
+    }
+  }
+);
+
+//admin update user
+export const updateUser = createAsyncThunk(
+  "adminupdate/updateUser",
+  async (data, { getState, rejectWithValue }) => {
+    const state = getState();
+    const userInfo = state.signin.userInfo;
+
+    try {
+      const response = await Axios.put(
+        `http://localhost:5000/users/${data.id}`,
+        data,
+        {
+          headers: { authorization: `Bearer ${userInfo.token}` },
+        }
+      );
+
+      return response.data.message;
+    } catch (error) {
+      return rejectWithValue(error.response.data.message);
     }
   }
 );
@@ -123,8 +155,14 @@ const signinSlice = createSlice({
     updateSuccess: false,
     updateError: "",
     deleteUserSuccess: false,
-    deleteUserError: "",
+    deleteUserError: false,
     deleteUserMessage: "",
+    detailedUser: {},
+    detailedError: false,
+    detailedLoading: false,
+    userUpdateLoading: false,
+    userUpdateError: false,
+    userUpdateSuccess: false,
   },
   reducers: {
     userSignout: (state) => {
@@ -142,6 +180,12 @@ const signinSlice = createSlice({
       state.deleteUserSuccess = false;
       state.deleteUserError = false;
       state.deleteUserPending = false;
+      state.deleteUserMessage = "";
+    },
+    resetUpdate: (state) => {
+      state.userUpdateError = false;
+      state.userUpdateLoading = false;
+      state.userUpdateSuccess = false;
     },
   },
   extraReducers(builder) {
@@ -156,6 +200,18 @@ const signinSlice = createSlice({
       .addCase(getAllUsers.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      //get detailed user
+      .addCase(getDetailedUser.pending, (state) => {
+        state.detailedLoading = true;
+      })
+      .addCase(getDetailedUser.fulfilled, (state, action) => {
+        state.detailedLoading = false;
+        state.detailedUser = action.payload;
+      })
+      .addCase(getDetailedUser.rejected, (state, action) => {
+        state.detailedLoading = false;
+        state.detailedError = action.payload;
       })
 
       .addCase(userSignIn.pending, (state, action) => {
@@ -215,9 +271,22 @@ const signinSlice = createSlice({
       .addCase(deleteUser.rejected, (state, action) => {
         state.deleteUserPending = false;
         state.deleteUserError = action.payload;
+      })
+      //admin updata user
+      .addCase(updateUser.pending, (state) => {
+        state.userUpdateLoading = true;
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.userUpdateLoading = false;
+        state.userUpdateSuccess = true;
+      })
+      .addCase(updateUser.rejected, (state, action) => {
+        state.userUpdateLoading = false;
+        state.userUpdateError = action.payload;
       });
   },
 });
 
 export default signinSlice.reducer;
-export const { userSignout, profileReset, deleteReset } = signinSlice.actions;
+export const { userSignout, profileReset, deleteReset, resetUpdate } =
+  signinSlice.actions;

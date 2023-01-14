@@ -7,15 +7,11 @@ export const createNewOrder = createAsyncThunk(
     const state = getState();
     const userInfo = state.signin.userInfo;
 
-    const response = await axios.post(
-      "https://cspade-marketplace.herokuapp.com/orders",
-      order,
-      {
-        headers: {
-          authorization: `Bearer ${userInfo.token}`,
-        },
-      }
-    );
+    const response = await axios.post("http://localhost:5000/orders", order, {
+      headers: {
+        authorization: `Bearer ${userInfo.token}`,
+      },
+    });
     return response.data;
   }
 );

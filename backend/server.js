@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 5000;
 const __dirname = path.resolve();
 
 mongoose
-  .connect(process.env.MONGODB_URL || "mongodb://localhost/centerspade", {
+  .connect("mongodb://localhost/centerspade", {
     useNewUrlParser: true,
   })
   .then(() => console.log("db check"))
