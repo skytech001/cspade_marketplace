@@ -19,6 +19,7 @@ import ProductEditScreen from "./screens/ProductEditScreen";
 import ListOrderScreen from "./screens/ListOrderScreen";
 import ListUserScreen from "./screens/ListUserScreen";
 import UserEditScreen from "./screens/UserEditScreen";
+import DashboardScreen from "./screens/DashboardScreen";
 
 function App() {
   const { cartItems } = useSelector((state) => state.addToCart);
@@ -125,6 +126,7 @@ function App() {
               <Route path="/userslist" element={<ListUserScreen />}></Route>
               <Route path="/orderlist" element={<ListOrderScreen />}></Route>
               <Route path="/user/:id/edit" element={<UserEditScreen />}></Route>
+              <Route path="/dashboard" element={<DashboardScreen />}></Route>
               <Route
                 path="/product/:id/edit"
                 element={<ProductEditScreen />}

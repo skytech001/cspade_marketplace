@@ -7,6 +7,7 @@ import shippingReducer from "./features/shippingSlice";
 import paymentReducer from "./features/paymentSlice";
 import orderReducer from "./features/placeOrderSlice";
 import orderListReducer from "./features/orderListSlice";
+import dashboardReducer from "./features/dashboardSlice";
 
 const store = configureStore({
   reducer: {
@@ -18,6 +19,7 @@ const store = configureStore({
     payment: paymentReducer,
     order: orderReducer,
     orderList: orderListReducer,
+    dashboard: dashboardReducer,
   },
 });
 
