@@ -8,6 +8,7 @@ export const addItemToCart = createAsyncThunk(
 
     return {
       name: response.data.name,
+      seller: response.data.seller,
       image: response.data.image,
       price: response.data.price,
       countInStock: response.data.countInStock,

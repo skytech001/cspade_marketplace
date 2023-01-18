@@ -63,7 +63,6 @@ export const getDetailedUser = createAsyncThunk(
   async (id, { getState, rejectWithValue }) => {
     const state = getState();
     const userInfo = state.signin.userInfo;
-
     try {
       const response = await Axios.get(`http://localhost:5000/users/${id}`, {
         headers: { authorization: `Bearer ${userInfo.token}` },
@@ -90,6 +89,7 @@ export const updateUserProfile = createAsyncThunk(
           headers: { authorization: `Bearer ${userInfo.token}` },
         }
       );
+
       return response.data;
     } catch (error) {
       return rejectWithValue(

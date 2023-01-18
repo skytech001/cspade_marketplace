@@ -2,7 +2,7 @@ import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import LoadingBox from "../components/LoadingBox";
 import MessageBox from "../components/MessageBox";
 import { getClickedProduct } from "../features/clickedProductSlice";
@@ -14,6 +14,9 @@ import {
 } from "../features/productSlice";
 
 const ProductEditScreen = () => {
+  const { pathname } = useLocation();
+  const sellerMode = pathname.indexOf("/seller") >= 0;
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const params = useParams();
@@ -50,7 +53,11 @@ const ProductEditScreen = () => {
       }
     }
     if (createdProduct.name) {
-      navigate(`/Listofproduct`);
+      if (sellerMode) {
+        navigate(`/listofproduct/sellers`);
+      } else {
+        navigate(`/Listofproduct`);
+      }
       dispatch(createProductReset());
     }
   }, [

@@ -20,6 +20,8 @@ import ListOrderScreen from "./screens/ListOrderScreen";
 import ListUserScreen from "./screens/ListUserScreen";
 import UserEditScreen from "./screens/UserEditScreen";
 import DashboardScreen from "./screens/DashboardScreen";
+import SellerAuthRoute from "./components/SellerAuthRoute";
+import SellerScreen from "./screens/SellerScreen";
 
 function App() {
   const { cartItems } = useSelector((state) => state.addToCart);
@@ -70,6 +72,22 @@ function App() {
             ) : (
               <Link to="/signin">Sign In</Link>
             )}
+            {userInfo && userInfo.isSeller && (
+              <div className="dropdown">
+                <Link to="#admin">
+                  {" "}
+                  Seller <i className="fa fa-caret-down"></i>
+                </Link>
+                <ul className="dropdown-content">
+                  <li>
+                    <Link to="/Listofproduct/sellers">Products</Link>
+                  </li>
+                  <li>
+                    <Link to="/orderlist/sellers">Orders</Link>
+                  </li>
+                </ul>
+              </div>
+            )}
             {userInfo && userInfo.isAdmin && (
               <div className="dropdown">
                 <Link to="#admin">
@@ -104,7 +122,7 @@ function App() {
               exact
             ></Route>
             <Route path="/signin" element={<SigninScreen />}></Route>
-
+            <Route path="/seller/:id" element={<SellerScreen />}></Route>
             <Route path="/register" element={<RegisterScreen />}></Route>
             <Route path="/shipping" element={<ShippingAddressScreen />}></Route>
             <Route path="/payment" element={<PaymentMethodScreen />}></Route>
@@ -130,6 +148,20 @@ function App() {
               <Route
                 path="/product/:id/edit"
                 element={<ProductEditScreen />}
+              ></Route>
+            </Route>
+            <Route element={<SellerAuthRoute user={userInfo} />}>
+              <Route
+                path="/product/:id/edit/sellers"
+                element={<ProductEditScreen />}
+              ></Route>
+              <Route
+                path="/Listofproduct/sellers"
+                element={<ListProductScreen />}
+              ></Route>
+              <Route
+                path="/orderlist/sellers"
+                element={<ListOrderScreen />}
               ></Route>
             </Route>
 

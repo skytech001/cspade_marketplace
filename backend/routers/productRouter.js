@@ -1,6 +1,6 @@
 import express from "express";
 import expressAsyncHandler from "express-async-handler";
-import { isAuth, isAdmin } from "../utils.js";
+import { isAuth, isAdmin, isAdminOrIsSeller } from "../utils.js";
 import Product from "../models/productModel.js";
 import { v2 as cloudinary } from "cloudinary";
 import dotenv from "dotenv";
@@ -15,7 +15,13 @@ cloudinary.config({
 
 productRouter.get("/", async (req, res) => {
   // the root here refers to the products because this is a router to product root, the app.use('/products) in the  server points to it.
-  const products = await Product.find({});
+  const seller = req.query.seller || "";
+
+  const sellerFilter = seller ? { seller } : {};
+  const products = await Product.find({ ...sellerFilter }).populate(
+    "seller",
+    "seller.name seller.logo"
+  );
   res.send(products);
 });
 
@@ -25,7 +31,10 @@ productRouter.get("/", async (req, res) => {
 // });
 
 productRouter.get("/:id", async (req, res) => {
-  const product = await Product.findOne({ _id: req.params.id });
+  const product = await Product.findOne({ _id: req.params.id }).populate(
+    "seller",
+    "seller.name seller.logo seller.rating seller.numReviews"
+  );
   if (product) {
     res.send(product);
     return;
@@ -37,7 +46,7 @@ productRouter.get("/:id", async (req, res) => {
 productRouter.post(
   "/",
   isAuth,
-  isAdmin,
+  isAdminOrIsSeller,
   expressAsyncHandler(async (req, res) => {
     const options = {
       upload_preset: "product_images",
@@ -60,6 +69,7 @@ productRouter.post(
     if (images) {
       const product = new Product({
         name: req.body.name,
+        seller: req.user.id,
         image: images,
         price: req.body.price,
         category: req.body.category,
@@ -78,7 +88,7 @@ productRouter.post(
 productRouter.put(
   "/:id",
   isAuth,
-  isAdmin,
+  isAdminOrIsSeller,
   expressAsyncHandler(async (req, res) => {
     const product = await Product.findById(req.params.id);
     if (product) {

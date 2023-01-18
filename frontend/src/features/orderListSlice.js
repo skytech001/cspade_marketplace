@@ -19,13 +19,16 @@ export const getdetailOrder = createAsyncThunk(
 
 export const getAllOrders = createAsyncThunk(
   "orderList/getAllOrders",
-  async (_, { getState, rejectWithValue }) => {
+  async ({ seller = "" }, { getState, rejectWithValue }) => {
     const state = getState();
     const userInfo = state.signin.userInfo;
     try {
-      const response = await axios.get("http://localhost:5000/orders", {
-        headers: { authorization: `Bearer ${userInfo.token}` },
-      });
+      const response = await axios.get(
+        `http://localhost:5000/orders?seller=${seller}`,
+        {
+          headers: { authorization: `Bearer ${userInfo.token}` },
+        }
+      );
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data.message);

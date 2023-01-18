@@ -101,7 +101,6 @@ const OrderScreen = () => {
                                   {item.name}
                                 </Link>
                               </div>
-
                               <div>
                                 {item.qty} x ${item.price} = $
                                 {item.price * item.qty}

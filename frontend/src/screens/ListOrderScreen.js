@@ -1,7 +1,7 @@
 import React from "react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import LoadingBox from "../components/LoadingBox";
 import MessageBox from "../components/MessageBox";
 import {
@@ -11,6 +11,9 @@ import {
 } from "../features/orderListSlice";
 
 const ListOrderScreen = () => {
+  const { pathname } = useLocation();
+  const sellerMode = pathname.indexOf("/seller") >= 0;
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const {
@@ -20,9 +23,10 @@ const ListOrderScreen = () => {
     deleteSuccess,
     deleteMessage,
   } = useSelector((state) => state.orderList);
+  const { userInfo } = useSelector((store) => store.signin);
 
   useEffect(() => {
-    dispatch(getAllOrders());
+    dispatch(getAllOrders({ seller: sellerMode ? userInfo.id : "" }));
     if (deleteSuccess) {
       setTimeout(() => {
         dispatch(deleteOrderReset());

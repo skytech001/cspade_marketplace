@@ -2,26 +2,46 @@ import React from "react";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import LoadingBox from "../components/LoadingBox";
 import MessageBox from "../components/MessageBox";
-import { profileReset, updateUserProfile } from "../features/signinSlice";
+import {
+  getDetailedUser,
+  profileReset,
+  updateUserProfile,
+} from "../features/signinSlice";
 
 const ProfileScreen = () => {
   const [name, setName] = useState("");
   const [email, setEail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmpassword, setConfirmpassword] = useState("");
-  const { userInfo, updateLoading, updateSuccess, updateError, isSignedIn } =
+  const [sellerName, setSellerName] = useState("");
+  const [sellerLogo, setSellerLogo] = useState("");
+  const [sellerDescription, setSellerDescription] = useState("");
+  const { userInfo, updateLoading, updateSuccess, updateError, detailedUser } =
     useSelector((state) => state.signin);
-  const navigate = useNavigate();
+
   const dispatch = useDispatch();
 
   useEffect(() => {
-    setName(userInfo.name);
-    setEail(userInfo.email);
-    dispatch(profileReset());
-  }, [dispatch, navigate, isSignedIn, userInfo]);
+    if (
+      (userInfo.isSeller &&
+        (!detailedUser.seller || detailedUser._id !== userInfo.id)) ||
+      updateSuccess
+    ) {
+      dispatch(getDetailedUser(userInfo.id));
+      dispatch(profileReset());
+      // setTimeout(() => dispatch(profileReset()), 3000);
+    } else {
+      setName(userInfo.name);
+      setEail(userInfo.email);
+      if (userInfo.isSeller) {
+        setSellerName(detailedUser.seller.name);
+        setSellerLogo(detailedUser.seller.logo);
+        setSellerDescription(detailedUser.seller.description);
+      }
+    }
+  }, [dispatch, updateSuccess, userInfo, detailedUser]);
 
   //  dispatch(userSignIn())
 
@@ -31,7 +51,17 @@ const ProfileScreen = () => {
     if (password !== confirmpassword) {
       alert("Password and Confirmed Password does not match");
     } else {
-      dispatch(updateUserProfile({ id: userInfo.id, name, email, password }));
+      dispatch(
+        updateUserProfile({
+          id: userInfo.id,
+          name,
+          email,
+          password,
+          sellerName,
+          sellerDescription,
+          sellerLogo,
+        })
+      );
     }
   };
 
@@ -90,7 +120,41 @@ const ProfileScreen = () => {
               onChange={(event) => setConfirmpassword(event.target.value)}
             />
           </div>
-
+          {userInfo.isSeller && detailedUser.seller && (
+            <>
+              <h2>Seller</h2>
+              <div>
+                <label htmlFor="sellerName">Seller Name</label>
+                <input
+                  id="sellerName"
+                  typel="text"
+                  placeholder="Enter Seller Name"
+                  value={sellerName}
+                  onChange={(event) => setSellerName(event.target.value)}
+                ></input>
+              </div>
+              <div>
+                <label htmlFor="sellerLogo">Seller Logo</label>
+                <input
+                  id="sellerLogo"
+                  typel="text"
+                  placeholder="Enter Seller Logo"
+                  value={sellerLogo}
+                  onChange={(event) => setSellerLogo(event.target.value)}
+                ></input>
+              </div>
+              <div>
+                <label htmlFor="sellerDescription">Seller Description</label>
+                <input
+                  id="sellerDescription"
+                  typel="text"
+                  placeholder="Enter Seller Description"
+                  value={sellerDescription}
+                  onChange={(event) => setSellerDescription(event.target.value)}
+                ></input>
+              </div>
+            </>
+          )}
           <div>
             <label />
             <button className="primary" type="submit">

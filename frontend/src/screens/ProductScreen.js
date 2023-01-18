@@ -82,6 +82,18 @@ const ProductScreen = (props) => {
               <div className="card card-body">
                 <ul>
                   <li>
+                    Seller{" "}
+                    <h2>
+                      <Link to={`/seller/${clickedProd.seller._id}`}>
+                        {clickedProd.seller.seller.name}
+                      </Link>
+                    </h2>
+                    <Rating
+                      rating={clickedProd.seller.seller.rating}
+                      numReviews={clickedProd.seller.seller.numReviews}
+                    ></Rating>
+                  </li>
+                  <li>
                     <div className="row">
                       <div>Price</div>
                       <div className="price">${clickedProd.price}</div>

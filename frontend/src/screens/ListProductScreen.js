@@ -1,13 +1,17 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import LoadingBox from "../components/LoadingBox";
 import MessageBox from "../components/MessageBox";
 import Pagination from "../components/Pagination";
 import { deleteProduct, getProductList } from "../features/productSlice";
 
 const ListProductScreen = () => {
+  // this gets the path from where we got here. eg(/listproduct/seller), or (/listproduct)
+  const { pathname } = useLocation();
+  //here if the pathname includes /seller, we check the index(should be greater than 0). if not from a seller route we return false
+  const sellerMode = pathname.indexOf("/seller") >= 0;
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [display, setDisplay] = useState([]);
@@ -21,13 +25,13 @@ const ListProductScreen = () => {
     deleteError,
     deleteSuccess,
   } = useSelector((store) => store.products);
-
+  const { userInfo } = useSelector((store) => store.signin);
   const pageSize = 10;
 
   useEffect(() => {
-    dispatch(getProductList());
+    dispatch(getProductList({ seller: sellerMode ? userInfo.id : "" }));
     setDisplay((data) => data);
-  }, [dispatch, deleteSuccess]);
+  }, [dispatch, deleteSuccess, deleteError]);
 
   const deleteHandler = (product) => {
     if (
@@ -40,7 +44,11 @@ const ListProductScreen = () => {
   };
 
   const createHandler = () => {
-    navigate(`/product/${" "}/edit`);
+    if (sellerMode) {
+      navigate(`/product/${" "}/edit/sellers`);
+    } else {
+      navigate(`/product/${" "}/edit`);
+    }
   };
 
   return (
@@ -87,7 +95,11 @@ const ListProductScreen = () => {
                         type="button"
                         className="small"
                         onClick={() => {
-                          navigate(`/product/${product._id}/edit`);
+                          if (sellerMode) {
+                            navigate(`/product/${product._id}/edit/sellers`);
+                          } else {
+                            navigate(`/product/${product._id}/edit`);
+                          }
                         }}
                       >
                         Edit

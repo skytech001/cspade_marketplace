@@ -3,9 +3,14 @@ import axios from "axios";
 
 export const getProductList = createAsyncThunk(
   "products/getProductList",
-  async () => {
+  // the seller argument in the next line means that the default value of seller is empty string when nothing is passes to it from dispatch.
+  async ({ seller = "" }, { getState }) => {
+    const state = getState();
+    const userInfo = state.signin.userInfo;
     try {
-      const response = await axios.get("http://localhost:5000/products");
+      const response = await axios.get(
+        `http://localhost:5000/products?seller=${seller}`
+      );
       return response.data;
     } catch (err) {
       return err.message;
@@ -76,6 +81,7 @@ export const deleteProduct = createAsyncThunk(
     const userInfo = state.signin.userInfo;
     try {
       const response = await axios.delete(
+        // https://cspade-marketplace.herokuapp.com
         `http://localhost:5000/products/${product._id}`,
         {
           headers: { authorization: `bearer ${userInfo.token}` },

@@ -13,7 +13,7 @@ const HomeScreen = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getProductList());
+    dispatch(getProductList({}));
   }, [dispatch]);
 
   return (

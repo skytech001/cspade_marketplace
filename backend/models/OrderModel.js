@@ -5,12 +5,13 @@ const orderSchema = new mongoose.Schema(
     orderItems: [
       {
         name: { type: String, required: true },
+        seller: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
         qty: { type: Number, required: true },
         image: [{ type: String, required: true }],
         price: { type: Number, required: true },
         product: {
           type: mongoose.Schema.Types.ObjectId, // this is a link to product schema
-          ref: "product",
+          ref: "Product",
           required: true,
         },
       },
