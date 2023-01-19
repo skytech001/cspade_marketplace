@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import HomeScreen from "./screens/HomeScreen";
 import ProductScreen from "./screens/ProductScreen";
@@ -22,10 +23,19 @@ import UserEditScreen from "./screens/UserEditScreen";
 import DashboardScreen from "./screens/DashboardScreen";
 import SellerAuthRoute from "./components/SellerAuthRoute";
 import SellerScreen from "./screens/SellerScreen";
+import SearchBox from "./components/SearchBox";
+import SearchScreen from "./screens/SearchScreen";
+import { getProductCategories } from "./features/productSlice";
+import MessageBox from "./components/MessageBox";
+import LoadingBox from "./components/LoadingBox";
 
 function App() {
   const { cartItems } = useSelector((state) => state.addToCart);
   const { userInfo, isSignedIn } = useSelector((state) => state.signin);
+  const [sidebarIsOpen, setSidebarIsOpen] = useState(false);
+  const { categories, categoryLoading, categoryError } = useSelector(
+    (store) => store.products
+  );
 
   const dispatch = useDispatch();
 
@@ -33,14 +43,28 @@ function App() {
     dispatch(userSignout());
   };
 
+  useEffect(() => {
+    // dispatch(getProductCategories());
+  }, []);
+
   return (
     <BrowserRouter>
       <div className="grid-container">
         <header className="row">
           <div>
+            <button
+              className="open-sidebar"
+              type="button"
+              onClick={() => setSidebarIsOpen(true)}
+            >
+              <i className="fa fa-bars"></i>
+            </button>
             <Link className="brand" to="/">
               Centerspade
             </Link>
+          </div>
+          <div>
+            <SearchBox />
           </div>
           <div>
             <Link to="/cart">
@@ -112,7 +136,38 @@ function App() {
             )}
           </div>
         </header>
-
+        <aside className={sidebarIsOpen ? "open" : ""}>
+          <ul className="categories">
+            <li>
+              <strong>Categories</strong>
+              <button
+                onClick={() => setSidebarIsOpen(false)}
+                className="close-sidebar"
+                type="button"
+              >
+                <i className="fa fa-close"></i>
+              </button>
+            </li>
+            {categoryLoading ? (
+              <LoadingBox />
+            ) : categoryError ? (
+              <MessageBox variant="danger">{categoryError}</MessageBox>
+            ) : (
+              <>
+                {categories.map((c) => (
+                  <li key={c}>
+                    <Link
+                      to={`/search/category/${c}`}
+                      onClick={() => setSidebarIsOpen(false)}
+                    >
+                      {c}
+                    </Link>
+                  </li>
+                ))}
+              </>
+            )}
+          </ul>
+        </aside>
         <main>
           <Routes>
             <Route path="/cart" element={<CartScreen />}></Route>
@@ -127,6 +182,17 @@ function App() {
             <Route path="/shipping" element={<ShippingAddressScreen />}></Route>
             <Route path="/payment" element={<PaymentMethodScreen />}></Route>
             <Route path="/placeorder" element={<PlaceOrderScreen />}></Route>
+            <Route path="/search/name/:name" element={<SearchScreen />}></Route>
+            <Route path="/search/name" element={<SearchScreen />}></Route>
+            {/* last name param is optional */}
+            <Route
+              path="/search/category/:category"
+              element={<SearchScreen />}
+            ></Route>
+            <Route
+              path="/search/category/:category/name/:name"
+              element={<SearchScreen />}
+            ></Route>
 
             <Route element={<PrivateRoute user={userInfo} />}>
               <Route path="/profile" element={<ProfileScreen />}></Route>
@@ -164,7 +230,6 @@ function App() {
                 element={<ListOrderScreen />}
               ></Route>
             </Route>
-
             <Route path="/" element={<HomeScreen />} exact></Route>
           </Routes>
         </main>

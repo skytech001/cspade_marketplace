@@ -20,6 +20,22 @@ export const getAllUsers = createAsyncThunk(
   }
 );
 
+export const getTopSellers = createAsyncThunk(
+  "users/getTopSellers",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await Axios.get(
+        " http://localhost:5000/users/top-sellers"
+      );
+      return response.data;
+    } catch (error) {
+      const err = rejectWithValue(error.response.data.message);
+      console.log(err);
+      return err;
+    }
+  }
+);
+
 export const userSignIn = createAsyncThunk(
   "signin/UserSignin",
   async ({ email, password }, { rejectWithValue }) => {
@@ -163,6 +179,9 @@ const signinSlice = createSlice({
     userUpdateLoading: false,
     userUpdateError: false,
     userUpdateSuccess: false,
+    topSellerLoading: false,
+    topSellerError: false,
+    topSeller: [],
   },
   reducers: {
     userSignout: (state) => {
@@ -283,6 +302,18 @@ const signinSlice = createSlice({
       .addCase(updateUser.rejected, (state, action) => {
         state.userUpdateLoading = false;
         state.userUpdateError = action.payload;
+      })
+      //top-sellers
+      .addCase(getTopSellers.pending, (state, action) => {
+        state.topSellerLoading = true;
+      })
+      .addCase(getTopSellers.fulfilled, (state, action) => {
+        state.topSellerLoading = false;
+        state.topSeller = action.payload;
+      })
+      .addCase(getTopSellers.rejected, (state, action) => {
+        state.topSellerLoading = false;
+        state.topSellerError = action.payload;
       });
   },
 });

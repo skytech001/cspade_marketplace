@@ -18,6 +18,17 @@ const userRouter = express.Router();
 //   res.send({ createdUsers });
 // });
 
+userRouter.get(
+  "/top-sellers",
+  expressAsyncHandler(async (req, res) => {
+    //sort(seller: -1) means sort sellers in decending order.
+    const topSellers = await User.find({ isSeller: true })
+      .sort({ "seller.rating": -1 })
+      .limit(3);
+    res.send(topSellers);
+  })
+);
+
 userRouter.post("/signin", async (req, res) => {
   const user = await User.findOne({ email: req.body.email });
 

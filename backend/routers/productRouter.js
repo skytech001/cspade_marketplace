@@ -13,15 +13,29 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_SECRET,
 });
 
+productRouter.get(
+  "/cat",
+  expressAsyncHandler(async (req, res) => {
+    const categorys = await Product.find().distinct("category");
+    res.send(categorys);
+  })
+);
+
 productRouter.get("/", async (req, res) => {
   // the root here refers to the products because this is a router to product root, the app.use('/products) in the  server points to it.
   const seller = req.query.seller || "";
-
+  const name = req.query.name || "";
+  const category = req.query.category || "";
+  const nameFilter = name ? { name: { $regex: name, $options: "i" } } : {};
   const sellerFilter = seller ? { seller } : {};
-  const products = await Product.find({ ...sellerFilter }).populate(
-    "seller",
-    "seller.name seller.logo"
-  );
+  const categoryFilter = category ? { category } : {};
+
+  const products = await Product.find({
+    ...sellerFilter,
+    ...nameFilter,
+    ...categoryFilter,
+  }).populate("seller", "seller.name seller.logo");
+  console.logz = products;
   res.send(products);
 });
 

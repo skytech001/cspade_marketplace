@@ -4,12 +4,13 @@ import axios from "axios";
 export const getProductList = createAsyncThunk(
   "products/getProductList",
   // the seller argument in the next line means that the default value of seller is empty string when nothing is passes to it from dispatch.
-  async ({ seller = "" }, { getState }) => {
+  async ({ seller = "", name = "", category = "" }, { getState }) => {
     const state = getState();
     const userInfo = state.signin.userInfo;
     try {
       const response = await axios.get(
-        `http://localhost:5000/products?seller=${seller}`
+        //the ? checks if any of the char to its right  exist.
+        `http://localhost:5000/products?seller=${seller}&name=${name}&category=${category}`
       );
       return response.data;
     } catch (err) {
@@ -99,6 +100,18 @@ export const deleteProduct = createAsyncThunk(
   }
 );
 
+export const getProductCategories = createAsyncThunk(
+  "products/getProductCategories",
+  async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/products/cat");
+      return response.data;
+    } catch (error) {
+      return error.response.data;
+    }
+  }
+);
+
 const initialState = {
   productList: [],
   isLoading: false,
@@ -110,6 +123,9 @@ const initialState = {
   deleteSuccess: false,
   deleteLoading: false,
   deleteError: false,
+  categoryLoading: false,
+  categoryError: false,
+  categories: [],
 };
 
 const productSlice = createSlice({
@@ -172,6 +188,17 @@ const productSlice = createSlice({
       .addCase(deleteProduct.rejected, (state, action) => {
         state.deleteLoading = false;
         state.deleteError = action.payload;
+      })
+      .addCase(getProductCategories.pending, (state) => {
+        state.categoryLoading = true;
+      })
+      .addCase(getProductCategories.fulfilled, (state, action) => {
+        state.categoryLoading = false;
+        state.categories = action.payload;
+      })
+      .addCase(getProductCategories.rejected, (state, action) => {
+        state.categoryLoading = false;
+        state.categoryError = action.payload;
       });
   },
 });
