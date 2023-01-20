@@ -5,26 +5,47 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getClickedProduct } from "../features/clickedProductSlice";
 import { addItemToCart } from "../features/addToCartSlice";
+import MessageBox from "../components/MessageBox";
+import { createReview, createReviewReset } from "../features/productSlice";
+import LoadingBox from "../components/LoadingBox";
 
 const ProductScreen = (props) => {
   const navigate = useNavigate();
   const params = useParams();
   const { clickedProd } = useSelector((state) => state.clickedProductDetail);
+  const { userInfo } = useSelector((store) => store.signin);
+  const { review, reviewLoading, reviewError, reviewMessage } = useSelector(
+    (store) => store.products
+  );
   const [prodImage, setProdImage] = useState("");
   const dispatch = useDispatch();
   const [qty, setQty] = useState(1);
   const id = params.id;
   const productImage = clickedProd.image;
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
 
   useEffect(() => {
-    dispatch(getClickedProduct(id));
+    setTimeout(() => dispatch(createReviewReset()), 2000);
 
+    dispatch(getClickedProduct(id));
     // setProdImage(clickedProd.image[0]);
-  }, [dispatch, id]);
+  }, [dispatch, id, reviewMessage, reviewError]);
 
   const addToCartHandler = () => {
     navigate(`/cart`);
     dispatch(addItemToCart({ id, qty }));
+  };
+
+  const submitHandler = (event) => {
+    event.preventDefault();
+    if (comment && rating) {
+      dispatch(createReview({ id: id, rating, comment, name: userInfo.name }));
+      setRating("");
+      setComment("");
+    } else {
+      alert("Please enter comment and rating");
+    }
   };
 
   if (!clickedProd) {
@@ -150,6 +171,77 @@ const ProductScreen = (props) => {
                 </ul>
               </div>
             </div>
+          </div>
+          <div>
+            <h2 id="reviews">Reviews</h2>
+            {clickedProd.reviews.length === 0 && (
+              <MessageBox variant="success">There is no review</MessageBox>
+            )}
+            <ul>
+              {clickedProd.reviews.map((review) => {
+                return (
+                  <li key={review._id}>
+                    <strong>{review.name}</strong>
+                    <Rating rating={review.rating} caption=" "></Rating>
+                    <p>{review.createdAt.substring(0, 10)}</p>
+                    <p>{review.comment}</p>
+                  </li>
+                );
+              })}
+              <li>
+                {userInfo.name ? (
+                  <form className="form" onSubmit={submitHandler}>
+                    <div>
+                      <h2>Write a review</h2>
+                    </div>
+                    <div>
+                      <label htmlFor="rating">Rating</label>
+                      <select
+                        id="rating"
+                        value={rating}
+                        onChange={(event) => setRating(event.target.value)}
+                      >
+                        <option value="">Select</option>
+                        <option value="1">1- Poor</option>
+                        <option value="2">2- Fair</option>
+                        <option value="3">3- Good</option>
+                        <option value="4">4- Very Good</option>
+                        <option value="5">5- Excelent</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label htmlFor="comment">Comment</label>
+                      <textarea
+                        id="comment"
+                        value={comment}
+                        onChange={(event) => setComment(event.target.value)}
+                      ></textarea>
+                    </div>
+                    <div>
+                      <label />
+                      <button type="submit" className="primary">
+                        Submit
+                      </button>
+                    </div>
+                    <div>
+                      {reviewLoading && <LoadingBox />}
+                      {reviewError && (
+                        <MessageBox variant="danger">{reviewError}</MessageBox>
+                      )}
+                      {reviewMessage && (
+                        <MessageBox variant="success">
+                          {reviewMessage}
+                        </MessageBox>
+                      )}
+                    </div>
+                  </form>
+                ) : (
+                  <MessageBox variant="danger">
+                    Please <Link to="/signin">Sign In</Link> to write a review
+                  </MessageBox>
+                )}
+              </li>
+            </ul>
           </div>
         </>
       )}

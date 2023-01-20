@@ -184,13 +184,17 @@ function App() {
             <Route path="/placeorder" element={<PlaceOrderScreen />}></Route>
             <Route path="/search/name/:name" element={<SearchScreen />}></Route>
             <Route path="/search/name" element={<SearchScreen />}></Route>
-            {/* last name param is optional */}
+
             <Route
               path="/search/category/:category"
               element={<SearchScreen />}
             ></Route>
             <Route
               path="/search/category/:category/name/:name"
+              element={<SearchScreen />}
+            ></Route>
+            <Route
+              path="/search/category/:category/name/:name/min/:min/max/:max/rating/:rating/order/:order"
               element={<SearchScreen />}
             ></Route>
 

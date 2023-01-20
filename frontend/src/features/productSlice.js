@@ -4,13 +4,24 @@ import axios from "axios";
 export const getProductList = createAsyncThunk(
   "products/getProductList",
   // the seller argument in the next line means that the default value of seller is empty string when nothing is passes to it from dispatch.
-  async ({ seller = "", name = "", category = "" }, { getState }) => {
+  async (
+    {
+      seller = "",
+      name = "",
+      category = "",
+      min = 0,
+      max = 0,
+      rating = 0,
+      order = "",
+    },
+    { getState }
+  ) => {
     const state = getState();
     const userInfo = state.signin.userInfo;
     try {
       const response = await axios.get(
         //the ? checks if any of the char to its right  exist.
-        `http://localhost:5000/products?seller=${seller}&name=${name}&category=${category}`
+        `http://localhost:5000/products?seller=${seller}&name=${name}&category=${category}&min=${min}&max=${max}&rating=${rating}&order=${order}`
       );
       return response.data;
     } catch (err) {
@@ -100,6 +111,27 @@ export const deleteProduct = createAsyncThunk(
   }
 );
 
+export const createReview = createAsyncThunk(
+  "products/createReview",
+  async (data, { getState, rejectWithValue }) => {
+    const state = getState();
+    const userInfo = state.signin.userInfo;
+    const id = data.id;
+    try {
+      const response = await axios.post(
+        `http://localhost:5000/products/${id}/reviews`,
+        data,
+        {
+          headers: { authorization: `Bearer ${userInfo.token}` },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data.message);
+    }
+  }
+);
+
 export const getProductCategories = createAsyncThunk(
   "products/getProductCategories",
   async () => {
@@ -126,6 +158,10 @@ const initialState = {
   categoryLoading: false,
   categoryError: false,
   categories: [],
+  review: "",
+  reviewLoading: false,
+  reviewError: "",
+  reviewMessage: "",
 };
 
 const productSlice = createSlice({
@@ -137,6 +173,11 @@ const productSlice = createSlice({
       state.createError = false;
       state.createSuccess = false;
       state.createdProduct = "";
+    },
+    createReviewReset: (state) => {
+      state.reviewLoading = false;
+      state.reviewError = "";
+      state.reviewMessage = "";
     },
   },
   extraReducers(builder) {
@@ -178,6 +219,7 @@ const productSlice = createSlice({
         state.createLoading = false;
         state.createError = action.payload;
       })
+      //delete product
       .addCase(deleteProduct.pending, (state) => {
         state.deleteLoading = true;
       })
@@ -189,6 +231,7 @@ const productSlice = createSlice({
         state.deleteLoading = false;
         state.deleteError = action.payload;
       })
+      //get categories
       .addCase(getProductCategories.pending, (state) => {
         state.categoryLoading = true;
       })
@@ -199,9 +242,22 @@ const productSlice = createSlice({
       .addCase(getProductCategories.rejected, (state, action) => {
         state.categoryLoading = false;
         state.categoryError = action.payload;
+      })
+      //create review
+      .addCase(createReview.pending, (state) => {
+        state.reviewLoading = true;
+      })
+      .addCase(createReview.fulfilled, (state, action) => {
+        state.reviewLoading = false;
+        state.review = action.payload.review;
+        state.reviewMessage = action.payload.message;
+      })
+      .addCase(createReview.rejected, (state, action) => {
+        state.reviewLoading = false;
+        state.reviewError = action.payload;
       });
   },
 });
 
 export default productSlice.reducer;
-export const { createProductReset } = productSlice.actions;
+export const { createProductReset, createReviewReset } = productSlice.actions;

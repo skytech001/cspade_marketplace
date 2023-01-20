@@ -411,6 +411,9 @@ img.large{
   border-right: none;
   margin-right: 0.5rem;
 }
+.active {
+  font-weight: bold;
+}
 
 /* phones */
 @media screen and (max-width: 600px) {
@@ -419,14 +422,16 @@ img.large{
   }
   .search input {
     width: 10rem;
-    height: 0.5rem;
+    height: 0.3rem;
+    margin-right: 0.2rem;
   }
   .search button {
-  height: 2.6rem;
+  height: 2.4rem;
   }
   .search button i {
+    position: relative;
+    top: -0.9rem;
     font-size: 1rem;
-    margin-bottom: 2rem;
   }
 
 }
