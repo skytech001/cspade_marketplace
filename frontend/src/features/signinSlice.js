@@ -54,7 +54,10 @@ export const userSignIn = createAsyncThunk(
 
 export const userRegister = createAsyncThunk(
   "register/UserRegister",
-  async ({ name, email, password }, { rejectWithValue }) => {
+  async (
+    { name, email, password, sellerName, sellerLogo, sellerDescription },
+    { rejectWithValue }
+  ) => {
     try {
       const response = await Axios.post(
         "http://localhost:5000/users/register",
@@ -62,6 +65,9 @@ export const userRegister = createAsyncThunk(
           name,
           email,
           password,
+          sellerName: sellerName,
+          sellerLogo: sellerLogo,
+          sellerDescription: sellerDescription,
         }
       );
 

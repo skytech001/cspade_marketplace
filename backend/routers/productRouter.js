@@ -14,7 +14,7 @@ cloudinary.config({
 });
 
 productRouter.get(
-  "/cat",
+  "/category",
   expressAsyncHandler(async (req, res) => {
     const categorys = await Product.find().distinct("category");
     res.send(categorys);
@@ -22,7 +22,8 @@ productRouter.get(
 );
 
 productRouter.get("/", async (req, res) => {
-  // the root here refers to the products because this is a router to product root, the app.use('/products) in the  server points to it.
+  const pageSize = 12;
+  const page = Number(req.query.pageNumber) || 1;
   const seller = req.query.seller || "";
   const name = req.query.name || "";
   const category = req.query.category || "";
@@ -49,6 +50,13 @@ productRouter.get("/", async (req, res) => {
       : order === "toprated"
       ? { rating: -1 }
       : { _id: -1 };
+  const count = await Product.count({
+    ...sellerFilter,
+    ...nameFilter,
+    ...categoryFilter,
+    ...priceFilter,
+    ...ratingFilter,
+  });
 
   const products = await Product.find({
     ...sellerFilter,
@@ -58,9 +66,11 @@ productRouter.get("/", async (req, res) => {
     ...ratingFilter,
   })
     .populate("seller", "seller.name seller.logo")
-    .sort(sortOrder);
+    .sort(sortOrder)
+    .skip(pageSize * (page - 1))
+    .limit(pageSize);
 
-  res.send(products);
+  res.send({ products, page, pages: Math.ceil(count / pageSize) });
 });
 
 // productRouter.get("/seed", async (req, res) => {

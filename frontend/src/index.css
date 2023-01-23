@@ -33,6 +33,31 @@ body {
   height: 100%;
 }
 
+.home-container {
+  display: grid;
+    grid-template-areas:
+      'banner'
+      'main';
+    grid-template-columns: 1fr;
+    grid-template-rows: 40rem 1fr;
+    height: 100%;
+}
+
+/* phones */
+@media screen and (max-width: 600px) {
+  .home-container {
+      grid-template-rows: 14rem 1fr;
+      height: 100%;
+    }
+  .medium.prod_img {
+    height: 22rem;
+  }
+  .card-body {
+    height: 12rem;
+    padding: 0;
+  }
+}
+
 header {
   grid-area: header;
   /* this connects this to the gird template area above called header*/
@@ -147,20 +172,14 @@ a.brand {
 }
 
 .row {
-  /*this makes the header flex to seperate logo from signin and cart*/
   display: flex;
   flex-wrap: wrap;
-  /*this makes flex responsive*/
   justify-content: space-between;
-  /*create maximum distance between items*/
   align-items: center;
-  /*center items vertically*/
 }
 
 .row.center {
-  /*center is a subclass to row. it items that contain both classes*/
   justify-content: center;
-  /*centers item vertically and horizontally*/
 }
 
 .row.left {
@@ -199,7 +218,7 @@ a.brand {
 /* aside */
 aside {
   position: fixed;
-  width: 30rem;
+  width: 24rem;
   height: 100%;
   background-color: #efefef;
   z-index: 1000;
@@ -252,14 +271,20 @@ img.small {
 img.medium {
   max-width: 29rem;
   width: 100%;
-  height: 25rem;
-}
-
-img.large{
-  width: 30rem; /*the impact of this line is to make the image responsive on smaller devices*/
   height: 30rem;
 }
 
+img.large{
+  width: 30rem; 
+  height: 30rem;
+}
+
+
+
+.container {
+  margin-left: 5rem;
+  margin-right: 5rem;
+}
 /*card*/
 
 .card {
@@ -284,7 +309,6 @@ img.large{
 
 /*rating*/
 .rating span {
-  /*all spans inside rating*/
   color: #f0c040;
   margin: 0.1rem;
 }
@@ -336,6 +360,12 @@ img.large{
   margin: 1rem;
 }
 
+.form > span {
+  display: flex;
+  flex-direction: row;
+  margin: 1rem;
+}
+
 .form label {
   margin: 1rem 0;
  
@@ -344,6 +374,12 @@ img.large{
 .dropdown {
   display: inline-block;
   position: relative;
+}
+
+.inner-dropdown {
+  display: inline-block;
+  position: relative;
+  z-index: 99;
 }
 
 .dropdown-content {
@@ -357,10 +393,40 @@ img.large{
   margin: 0;
   margin-top: 0.4rem;
   border-radius: 0.5rem;
+  z-index: 99;
+}
+
+.inner-dropdown-content {
+  position: absolute;
+  display: none;
+  right: 5rem;
+  min-width: 12rem;
+  padding: 1rem;
+  z-index: -1;
+  background-color: #203040;
+  margin: 0;
+  margin-top: 0.4rem;
+  border-radius: 0.5rem;
+}
+
+.inner-dropdown-content.name {
+top: -2.39rem;
+}
+
+.inner-dropdown-content.seller {
+  top: -2.39rem;
+}
+
+.inner-dropdown-content.admin {
+  top: -7rem;
 }
 
 .dropdown:hover .dropdown-content {/* if mouse over dropdown, the set dropdown-content to block display */
   display: block;
+}
+
+.inner-dropdown:hover .inner-dropdown-content { 
+ display: block;
 }
 
 .checkout-steps > div {
@@ -415,8 +481,33 @@ img.large{
   font-weight: bold;
 }
 
+/* pagination */
+.pagination a{
+    padding: 1rem;
+    margin: 0.5rem;
+    border-radius: 0.5rem;
+    border: 0.1rem #a4a4a4 solid;
+    font-size: 1.6rem;
+    font-family: Arial, Helvetica, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+.pagination a.active {
+  font-weight: bold;
+}
+/* tablet */
+@media screen and (max-width: 1024px) {
+  .search-field {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    font-size: small;
+
+  }
+}
+
 /* phones */
 @media screen and (max-width: 600px) {
+ 
   a.brand {
     display: none;
   }
@@ -433,5 +524,53 @@ img.large{
     top: -0.9rem;
     font-size: 1rem;
   }
+  .search-field {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    font-size: small;
+    /* margin: 2rem; */
+  }
+     aside {
+       width: 15rem;
+     }
+  
 
 }
+
+.swiper {
+  width: 100%;
+  height: 100%;
+}
+
+.swiper-slide {
+  text-align: center;
+  font-size: 18px;
+  background: #fff;
+
+  /* Center slide text vertically */
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+}
+
+.swiper-slide img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.banner {
+  width: 970px;
+  height: 250;
+}
+

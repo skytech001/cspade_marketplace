@@ -1,20 +1,22 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import LoadingBox from "../components/LoadingBox";
 import MessageBox from "../components/MessageBox";
 import Pagination from "../components/Pagination";
 import { deleteProduct, getProductList } from "../features/productSlice";
 
 const ListProductScreen = () => {
+  const [pageNum, setPageNum] = useState(1);
   // this gets the path from where we got here. eg(/listproduct/seller), or (/listproduct)
   const { pathname } = useLocation();
   //here if the pathname includes /seller, we check the index(should be greater than 0). if not from a seller route we return false
   const sellerMode = pathname.indexOf("/seller") >= 0;
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [display, setDisplay] = useState([]);
+  const params = useParams();
+
   const {
     productList,
     isLoading,
@@ -26,12 +28,15 @@ const ListProductScreen = () => {
     deleteSuccess,
   } = useSelector((store) => store.products);
   const { userInfo } = useSelector((store) => store.signin);
-  const pageSize = 10;
 
   useEffect(() => {
-    dispatch(getProductList({ seller: sellerMode ? userInfo.id : "" }));
-    setDisplay((data) => data);
-  }, [dispatch, deleteSuccess, deleteError]);
+    dispatch(
+      getProductList({
+        seller: sellerMode ? userInfo.id : "",
+        pageNumber: pageNum,
+      })
+    );
+  }, [dispatch, deleteSuccess, deleteError, pageNum]);
 
   const deleteHandler = (product) => {
     if (
@@ -82,7 +87,7 @@ const ListProductScreen = () => {
               </tr>
             </thead>
             <tbody>
-              {display.map((product) => {
+              {productList.map((product) => {
                 return (
                   <tr key={product._id}>
                     <td>{product._id}</td>
@@ -119,9 +124,8 @@ const ListProductScreen = () => {
             </tbody>
           </table>
           <Pagination
-            pageSize={pageSize}
-            list={productList}
-            newList={setDisplay}
+            path={sellerMode ? "/Listofproduct/sellers/" : "/Listofproduct/"}
+            setPageNum={setPageNum}
           />
         </>
       )}

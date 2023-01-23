@@ -7,7 +7,11 @@ const Product = (props) => {
   return (
     <div className="card">
       <Link to={`/product/${product._id}`}>
-        <img className="medium" src={product.image[0]} alt={product.name} />
+        <img
+          className="medium prod_img"
+          src={product.image[0]}
+          alt={product.name}
+        />
       </Link>
       <div className="card-body">
         <Link to={`/product/${product._id}`}>

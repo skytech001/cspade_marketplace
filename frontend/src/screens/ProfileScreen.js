@@ -65,6 +65,15 @@ const ProfileScreen = () => {
     }
   };
 
+  const uploadFileHandler = (event) => {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = () => {
+      setSellerLogo(reader.result);
+    };
+  };
+
   return (
     <div>
       <form className="form" onSubmit={submitHandler}>
@@ -134,13 +143,12 @@ const ProfileScreen = () => {
                 ></input>
               </div>
               <div>
-                <label htmlFor="sellerLogo">Seller Logo</label>
+                <label htmlFor="logoFile">Upload Logo</label>
                 <input
-                  id="sellerLogo"
-                  typel="text"
-                  placeholder="Enter Seller Logo"
-                  value={sellerLogo}
-                  onChange={(event) => setSellerLogo(event.target.value)}
+                  id="logofile"
+                  type="file"
+                  placeholder="Drag and drop Logo here"
+                  onChange={uploadFileHandler}
                 ></input>
               </div>
               <div>

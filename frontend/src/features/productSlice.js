@@ -6,6 +6,7 @@ export const getProductList = createAsyncThunk(
   // the seller argument in the next line means that the default value of seller is empty string when nothing is passes to it from dispatch.
   async (
     {
+      pageNumber = "",
       seller = "",
       name = "",
       category = "",
@@ -18,11 +19,13 @@ export const getProductList = createAsyncThunk(
   ) => {
     const state = getState();
     const userInfo = state.signin.userInfo;
+
     try {
       const response = await axios.get(
         //the ? checks if any of the char to its right  exist.
-        `http://localhost:5000/products?seller=${seller}&name=${name}&category=${category}&min=${min}&max=${max}&rating=${rating}&order=${order}`
+        `http://localhost:5000/products?&pageNumber=${pageNumber}&seller=${seller}&name=${name}&category=${category}&min=${min}&max=${max}&rating=${rating}&order=${order}`
       );
+
       return response.data;
     } catch (err) {
       return err.message;
@@ -136,7 +139,9 @@ export const getProductCategories = createAsyncThunk(
   "products/getProductCategories",
   async () => {
     try {
-      const response = await axios.get("http://localhost:5000/products/cat");
+      const response = await axios.get(
+        "http://localhost:5000/products/category"
+      );
       return response.data;
     } catch (error) {
       return error.response.data;
@@ -146,6 +151,8 @@ export const getProductCategories = createAsyncThunk(
 
 const initialState = {
   productList: [],
+  pages: "",
+  page: "",
   isLoading: false,
   error: false,
   createLoading: false,
@@ -187,7 +194,9 @@ const productSlice = createSlice({
       })
       .addCase(getProductList.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.productList = action.payload;
+        state.productList = action.payload.products;
+        state.pages = action.payload.pages;
+        state.page = action.payload.page;
       })
       .addCase(getProductList.rejected, (state) => {
         state.isLoading = false;

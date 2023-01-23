@@ -3,9 +3,16 @@ import User from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import { generateToken, isAdmin, isAdminOrIsSeller, isAuth } from "../utils.js";
 import expressAsyncHandler from "express-async-handler";
+import { v2 as cloudinary } from "cloudinary";
+import dotenv from "dotenv";
 
 const userRouter = express.Router();
-
+dotenv.config();
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_SECRET,
+});
 // userRouter.get("/seed", async (req, res) => {
 //   // await User.remove({});
 //   const createdUsers = new User({
@@ -52,11 +59,29 @@ userRouter.post("/signin", async (req, res) => {
 userRouter.post(
   "/register",
   expressAsyncHandler(async (req, res, next) => {
+    const options = {
+      upload_preset: "product_images",
+      use_filename: true,
+      unique_filename: false,
+      overwrite: true,
+    };
+    const file = req.body.sellerLogo;
+    const logo = await cloudinary.uploader.upload(file, options);
+
     const user = new User({
       name: req.body.name,
       email: req.body.email,
       password: bcrypt.hashSync(req.body.password, 8),
+      isSeller: req.body.sellerName ? true : false,
+      seller: req.body.sellerName
+        ? {
+            name: req.body.sellerName,
+            logo: logo.url,
+            description: req.body.sellerDescription,
+          }
+        : "",
     });
+
     const createdUser = await user.save();
     res.send({
       id: createdUser.id,
@@ -85,13 +110,24 @@ userRouter.put(
   "/profile",
   isAuth,
   expressAsyncHandler(async (req, res) => {
+    const options = {
+      upload_preset: "product_images",
+      use_filename: true,
+      unique_filename: false,
+      overwrite: true,
+    };
+    const file = req.body.sellerLogo;
+    const logo = await cloudinary.uploader.upload(file, options);
+    console.log("hello");
+    console.log(logo.url);
+    console.log("hello");
     const user = await User.findById(req.body.id);
     if (user) {
       user.name = req.body.name || user.name;
       user.email = req.body.email || user.email;
       if (user.isSeller) {
         user.seller.name = req.body.sellerName || user.seller.name;
-        user.seller.logo = req.body.sellerLogo || user.seller.logo;
+        user.seller.logo = logo.url || user.seller.logo;
         user.seller.description =
           req.body.sellerDescription || user.seller.description;
       }

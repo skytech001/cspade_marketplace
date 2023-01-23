@@ -28,6 +28,7 @@ import SearchScreen from "./screens/SearchScreen";
 import { getProductCategories } from "./features/productSlice";
 import MessageBox from "./components/MessageBox";
 import LoadingBox from "./components/LoadingBox";
+import Banner from "./components/Banner";
 
 function App() {
   const { cartItems } = useSelector((state) => state.addToCart);
@@ -44,7 +45,7 @@ function App() {
   };
 
   useEffect(() => {
-    // dispatch(getProductCategories());
+    dispatch(getProductCategories());
   }, []);
 
   return (
@@ -66,74 +67,91 @@ function App() {
           <div>
             <SearchBox />
           </div>
-          <div>
+          <div className="menu">
             <Link to="/cart">
               Cart
               {cartItems.length > 0 && (
                 <span className="badge">{cartItems.length}</span>
               )}
             </Link>
-            {userInfo.name ? (
-              <div className="dropdown">
-                <Link to="#">
-                  {isSignedIn && `${userInfo.name}`}{" "}
-                  <i className="fa fa-caret-down"></i>
-                </Link>
-                <ul className="dropdown-content">
-                  <li>
-                    <Link to="/profile">User Profile</Link>
-                  </li>
-                  <li>
-                    <Link to="/orderhistory">My Orders</Link>
-                  </li>
-                  <li>
-                    <Link to="#signout" onClick={signoutHandler}>
-                      Sign Out
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-            ) : (
-              <Link to="/signin">Sign In</Link>
-            )}
-            {userInfo && userInfo.isSeller && (
-              <div className="dropdown">
-                <Link to="#admin">
-                  {" "}
-                  Seller <i className="fa fa-caret-down"></i>
-                </Link>
-                <ul className="dropdown-content">
-                  <li>
-                    <Link to="/Listofproduct/sellers">Products</Link>
-                  </li>
-                  <li>
-                    <Link to="/orderlist/sellers">Orders</Link>
-                  </li>
-                </ul>
-              </div>
-            )}
-            {userInfo && userInfo.isAdmin && (
-              <div className="dropdown">
-                <Link to="#admin">
-                  {" "}
-                  Admin <i className="fa fa-caret-down"></i>
-                </Link>
-                <ul className="dropdown-content">
-                  <li>
-                    <Link to="/dashboard">Dashboard</Link>
-                  </li>
-                  <li>
-                    <Link to="/Listofproduct">Products</Link>
-                  </li>
-                  <li>
-                    <Link to="/orderlist">Orders</Link>
-                  </li>
-                  <li>
-                    <Link to="/userslist">Users</Link>
-                  </li>
-                </ul>
-              </div>
-            )}
+            <>
+              {userInfo.name ? (
+                <div className="dropdown">
+                  <Link to="#">
+                    Account <i className="fa fa-caret-down"></i>
+                  </Link>
+                  <ul className="dropdown-content">
+                    <li>
+                      {userInfo.name && (
+                        <div className="inner-dropdown">
+                          <Link to="#">
+                            {isSignedIn && `${userInfo.name}`}{" "}
+                            <i className="fa fa-caret-down"></i>
+                          </Link>
+                          <ul className="inner-dropdown-content name">
+                            <li>
+                              <Link to="/profile">User Profile</Link>
+                            </li>
+                            <li>
+                              <Link to="/orderhistory">My Orders</Link>
+                            </li>
+                            <li>
+                              <Link to="#signout" onClick={signoutHandler}>
+                                Sign Out
+                              </Link>
+                            </li>
+                          </ul>
+                        </div>
+                      )}
+                    </li>
+                    <li>
+                      {userInfo && userInfo.isSeller && (
+                        <div className="inner-dropdown">
+                          <Link to="#admin">
+                            {" "}
+                            Seller <i className="fa fa-caret-down"></i>
+                          </Link>
+                          <ul className="inner-dropdown-content seller">
+                            <li>
+                              <Link to="/Listofproduct/sellers">Products</Link>
+                            </li>
+                            <li>
+                              <Link to="/orderlist/sellers">Orders</Link>
+                            </li>
+                          </ul>
+                        </div>
+                      )}
+                    </li>
+                    <li>
+                      {userInfo && userInfo.isAdmin && (
+                        <div className="inner-dropdown">
+                          <Link to="#admin">
+                            {" "}
+                            Admin <i className="fa fa-caret-down"></i>
+                          </Link>
+                          <ul className="inner-dropdown-content admin">
+                            <li>
+                              <Link to="/dashboard">Dashboard</Link>
+                            </li>
+                            <li>
+                              <Link to="/Listofproduct">Products</Link>
+                            </li>
+                            <li>
+                              <Link to="/orderlist">Orders</Link>
+                            </li>
+                            <li>
+                              <Link to="/userslist">Users</Link>
+                            </li>
+                          </ul>
+                        </div>
+                      )}
+                    </li>
+                  </ul>
+                </div>
+              ) : (
+                <Link to="/signin">Sign In</Link>
+              )}
+            </>
           </div>
         </header>
         <aside className={sidebarIsOpen ? "open" : ""}>
@@ -168,6 +186,7 @@ function App() {
             )}
           </ul>
         </aside>
+
         <main>
           <Routes>
             <Route path="/cart" element={<CartScreen />}></Route>
@@ -175,6 +194,10 @@ function App() {
               path="/product/:id"
               element={<ProductScreen />}
               exact
+            ></Route>
+            <Route
+              path="/pageNumber/:pageNumber"
+              element={<HomeScreen />}
             ></Route>
             <Route path="/signin" element={<SigninScreen />}></Route>
             <Route path="/seller/:id" element={<SellerScreen />}></Route>
@@ -194,7 +217,7 @@ function App() {
               element={<SearchScreen />}
             ></Route>
             <Route
-              path="/search/category/:category/name/:name/min/:min/max/:max/rating/:rating/order/:order"
+              path="/search/category/:category/name/:name/min/:min/max/:max/rating/:rating/order/:order/pageNumber/:pageNumber"
               element={<SearchScreen />}
             ></Route>
 
@@ -209,6 +232,10 @@ function App() {
             <Route element={<AdminAuthRooute user={userInfo} />}>
               <Route
                 path="/Listofproduct"
+                element={<ListProductScreen />}
+              ></Route>
+              <Route
+                path="/Listofproduct/pageNumber/:pageNumber"
                 element={<ListProductScreen />}
               ></Route>
               <Route path="/userslist" element={<ListUserScreen />}></Route>
@@ -230,6 +257,10 @@ function App() {
                 element={<ListProductScreen />}
               ></Route>
               <Route
+                path="/Listofproduct/sellers/pageNumber/:pageNumber"
+                element={<ListProductScreen />}
+              ></Route>
+              <Route
                 path="/orderlist/sellers"
                 element={<ListOrderScreen />}
               ></Route>
@@ -237,7 +268,6 @@ function App() {
             <Route path="/" element={<HomeScreen />} exact></Route>
           </Routes>
         </main>
-
         <footer className="row center">All right reserved</footer>
       </div>
     </BrowserRouter>

@@ -17,10 +17,13 @@ const SearchScreen = () => {
     max = 0,
     rating = 0,
     order = "newest",
+    pageNumber = 1,
   } = useParams();
   const dispatch = useDispatch();
   const {
     productList,
+    pages,
+    page,
     isLoading,
     error,
     categories,
@@ -37,19 +40,21 @@ const SearchScreen = () => {
         max,
         rating,
         order,
+        pageNumber,
       })
     );
     dispatch(getProductCategories());
-  }, [dispatch, name, category, min, max, rating, order]);
+  }, [dispatch, name, category, min, max, rating, order, pageNumber]);
 
   const getFilterUrl = (filter) => {
+    const filterPage = filter.page || pageNumber;
     const filterCategory = filter.category || category;
     const filterName = filter.name || name;
     const filterRating = filter.rating || rating;
     const sortOrder = filter.order || order;
     const filterMin = filter.min ? filter.min : filter.min === 0 ? 0 : min;
     const filterMax = filter.max ? filter.max : filter.max === 0 ? 0 : max;
-    return `/search/category/${filterCategory}/name/${filterName}/min/${filterMin}/max/${filterMax}/rating/${filterRating}/order/${sortOrder}`;
+    return `/search/category/${filterCategory}/name/${filterName}/min/${filterMin}/max/${filterMax}/rating/${filterRating}/order/${sortOrder}/pageNumber/${filterPage}`;
   };
 
   return (
@@ -78,9 +83,9 @@ const SearchScreen = () => {
         </div>
       </div>
       <div className="row top">
-        <div className="col-1">
-          <h3>Department</h3>
+        <div className="col-1 search-field">
           <div>
+            <h3>Department</h3>
             {categoryLoading ? (
               <LoadingBox />
             ) : categoryError ? (
@@ -128,7 +133,7 @@ const SearchScreen = () => {
           </div>
 
           <div>
-            <h3>Avg Customer Reviews</h3>
+            <h3>Reviews</h3>
             <ul>
               {ratings.map((r) => (
                 <li key={r.name}>
@@ -157,6 +162,17 @@ const SearchScreen = () => {
                 {productList.map((product) => {
                   return <Product key={product._id} product={product} />;
                 })}
+              </div>
+              <div className="row center pagination">
+                {[...Array(pages).keys()].map((x) => (
+                  <Link
+                    className={x + 1 === page ? "active" : ""}
+                    key={x + 1}
+                    to={getFilterUrl({ page: x + 1 })}
+                  >
+                    {x + 1}
+                  </Link>
+                ))}
               </div>
             </>
           )}

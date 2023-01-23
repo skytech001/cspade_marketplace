@@ -187,7 +187,7 @@ const ProductEditScreen = () => {
             id="imagefile"
             type="file"
             accept="image/*"
-            placeholder="Upload Image"
+            placeholder="Drag and Drop Images Here"
             onChange={uploadFileHandler}
           ></input>
           {createLoading && <LoadingBox></LoadingBox>}
